@@ -13,7 +13,6 @@ def add_task(task,completion_time):
         print("Task added successfully")
         time.sleep(2)
 def view_tasks():
-    
     with open (file_path , "r") as f:
         tasks = f.readlines()
         table = Table(title="To-Do List")
@@ -24,15 +23,12 @@ def view_tasks():
             name, deadline = task.strip().split(" - ")
             table.add_row(str(i), name, deadline)
         console.print(table)
-        # print("Tasks Available:")
-        # for task in enumerate(tasks):
-        #     number = task[0]
-        #     print(number+1,':',task[1],end='\n')
 def remove_task():
     while True:
         with open (file_path , "r") as f:
             while True:
-            
+                exit = False
+                with open (file_path , "r") as f:
                     tasks = f.readlines()
                     print('*******remove tasks menu*********')
                     if len(tasks) == 0:
@@ -63,15 +59,15 @@ def remove_task():
                                 print('removing task...')
                                 time.sleep(2)
                                 print("Task removed successfully")
+                                print('Reloading menu...')
                                 time.sleep(2)
                                 exit = False
                                 continue
                     else:
                         print("comeon you think we are here to waste our time?")
-                        print('try again or press {{q}} to exit')
                         time.sleep(2)  
-                        continue   
-                     
+                        exit = True
+                        break 
             if exit == True:
                 break           
 def complete_task():
@@ -80,52 +76,45 @@ def complete_task():
         tasks = f.readlines()
         while True:
             print('*******complete tasks menu*********')
-            exit_input = input('press {{q}} to exit:')
-            if exit_input.lower() == 'q':
-                print('exiting to main menu...')
-                time.sleep(2)
-                break
-            elif len(tasks) == 0:
+            if len(tasks) == 0:
                 print("no tasks available to complete")
                 print('exiting to main menu...')
                 time.sleep(2)
                 break
-            else:
-                print(f'there are {len(tasks)} tasks in the list')
-                #print(tasks)
-                #current_tasks = []
-                view_tasks()
-                for task in enumerate(tasks):
-                    current_tasks.append(task)
-                    #print(current_tasks)
-                    number = task[0]
-                    #print(type(number))
-                    #print(number+1,':',task[1],end='')
-            print('select the task you want to complete\n')
-            task_to_remove = int(input('enter the task number\n'))
-            for task in current_tasks:
-                if task[0] == (task_to_remove -1):
-                    current_tasks.remove(task)
-                    print(f'{task[1]} completed successfully')
-            #print(current_tasks)
-            with open (file_path , "w") as f:
-                for task in current_tasks:
-                    f.write(task[1])
-                print('completing...')
-                time.sleep(2)
-                print("Task completed and removed successfully")
+            print(f'there are {len(tasks)} tasks in the list')
+            view_tasks()
+            user_input = input('enter the task number you want to complete or press {{q}} to exit:')
+            if user_input.lower() == 'q':
                 print('exiting to main menu...')
                 time.sleep(2)
                 break
+            else:
+                for task in enumerate(tasks):
+                    current_tasks.append(task)
+                    number = task[0]
+                task_to_remove = int(user_input)
+                for task in current_tasks:
+                    if task[0] == (task_to_remove -1):
+                        current_tasks.remove(task)
+                        print(f'{task[1]} completed successfully')
+                with open (file_path , "w") as f:
+                    for task in current_tasks:
+                        f.write(task[1])
+                    print('completing...')
+                    time.sleep(2)
+                    print("Task completed and removed successfully")
+                    print('Reloading menu...')
+                    time.sleep(2)
+                    continue
 print('loading...')
 time.sleep(2)
 print("**********Welcome to the To-Do List App!**********")
 while True:
-    print("1. Add Task")
-    print("2. View Tasks")
-    print("3. Remove Task")
-    print("4. Complete Task")
-    print("5. Exit")
+    print("         1. Add Task")
+    print("         2. View Tasks")
+    print("         3. Remove Task")
+    print("         4. Complete Task")
+    print("         5. Exit")
     choice = input("Enter your choice: ")
     if choice == "1":
         print('loading...')
