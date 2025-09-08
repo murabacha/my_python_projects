@@ -30,24 +30,16 @@ def visual_diff(str1, str2):
     print("String 2:", str2)
 
     markers = []
-
-    # Compare up to the shortest length
     for ch1, ch2 in zip(str1, str2):
         if ch1 == ch2:
-            markers.append(" ")   # space = match
+            markers.append(" ")
         else:
-            markers.append("^")   # caret = mismatch
-
-    # Handle extra characters (if lengths differ)
+            markers.append("^") 
     if len(str1) > len(str2):
         markers.extend("^" * (len(str1) - len(str2)))
     elif len(str2) > len(str1):
         markers.extend("^" * (len(str2) - len(str1)))
-
-    # Print marker line
     print("Diff    :", "".join(markers))
-
-    # Print explanation of differences
     for i, (ch1, ch2) in enumerate(zip(str1, str2)):
         if ch1 != ch2:
             print(f"Mismatch at index {i}: '{ch1}' vs '{ch2}'")
