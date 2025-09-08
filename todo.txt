@@ -1,0 +1,2 @@
+task name {eating meat} - competion time {tuesday at 09:42 hours}
+task name {wash clothes} - competion time {tuesday at 05:00 hours}
