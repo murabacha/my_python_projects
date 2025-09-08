@@ -16,9 +16,9 @@ def view_tasks():
     with open (file_path , "r") as f:
         tasks = f.readlines()
         table = Table(title="To-Do List")
-        table.add_column("Taks Number.", style="cyan", justify="right")
-        table.add_column("Task", style="magenta")
-        table.add_column("Deadline", style="green")
+        table.add_column("Taks Number.", style="white", justify="left")
+        table.add_column("Task", style="purple", justify="center")
+        table.add_column("Deadline", style="red")
         for i, task in enumerate(tasks, start=1):
             name, deadline = task.strip().split(" - ")
             table.add_row(str(i), name, deadline)
