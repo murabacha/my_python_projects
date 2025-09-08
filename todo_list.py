@@ -17,7 +17,7 @@ def view_tasks():
         tasks = f.readlines()
         table = Table(title="To-Do List")
         table.add_column("Taks Number.", style="white", justify="left")
-        table.add_column("Task", style="purple", justify="center")
+        table.add_column("Task", style="purple", justify="left")
         table.add_column("Deadline", style="red")
         for i, task in enumerate(tasks, start=1):
             name, deadline = task.strip().split(" - ")
