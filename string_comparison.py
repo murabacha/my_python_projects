@@ -14,6 +14,8 @@ print(f'stopping at index {i} because thats where the shortest string ends')
 for tuple in enumerate(z):
     if tuple[1][0] != tuple[1][1]:
         print(f'the index where the difference between the strings is at {tuple[0]} and the caracters are {{{tuple[1][0]}}} and {{{tuple[1][1]}}}')
+
+#second method using zip and enumerate method
 list = []
 list1 = []
 for i,(d,c) in enumerate(zip(x,y)):
