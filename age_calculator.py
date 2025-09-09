@@ -87,12 +87,6 @@ def calculattion(choice,birth_date):
             table.add_row('years', f'{age_in_years(birth_date):,.0f}')
             console = Console()
             console.print(table)
-            # print(f'you age in seconds is {age_in_seconds(birth_date): ,.0f} seconds')
-            # print(f'you age in minutes is {age_in_minutes(birth_date): ,.0f} minutes')
-            # print(f'you age in hours is {age_in_hours(birth_date) :,.0f} hours')
-            # print(f'you age in days is {age_in_days(birth_date) :,.0f} days')
-            # print(f'you age in months is {age_in_months(birth_date): ,.0f} months')
-            # print(f'you age in years is {age_in_years(birth_date): ,.0f} years')
             return True
         elif choice == 8:
             print('calculating days .....')
