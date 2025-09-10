@@ -13,6 +13,7 @@ patience = 5
 skip = False
 hard = 2
 hard_mode = False
+impatience = False
 modes = {
         "hard":['rock']*6 + ['paper']*3 + ['scissors']*2,
         "medium":['rock']*2 + ['paper']*4 + ['scissors']*2,
@@ -73,6 +74,13 @@ difficulty_drop_taunts = [
     "📉 Confidence just took a nosedive. Enjoy the kiddie pool.",
     "🫣 Insanely Hard Mode wasn’t for everyone. Clearly."
 ]
+impatience_taunts = [
+    "🤯 Five wrong inputs? Are you even trying?",
+    "🧨 I’ve seen snails solve puzzles faster than this.",
+    "🫠 My circuits are melting from secondhand embarrassment.",
+    "📵 You’ve officially been banned from logic.",
+    "🧹 I’m cleaning up your mess while you keep making it."
+]
 def really_hard(user_choice):
     global hard
     if hard == 0:
@@ -99,6 +107,7 @@ def print_function():
     print('select a choice\n')
     print('1: for rock\n2: for paper\n3: for scissors\n')
 def get_user_choice():
+    global patience,impatience
     while True:
         try:
             user_choice = int(input('enter your choice\n'))
@@ -114,8 +123,18 @@ def get_user_choice():
                 return user_choice
         except ValueError:
             print('[bold red]please enter a valid choice[/bold red]')
+            patience -= 1
+            if patience == 0:
+                print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
+                time.sleep(5)
+                print('exiting game Goodbye👋👋🖐')
+                time.sleep(2)
+                impatience = True
+                break
 def compare_choices(user_choice, computer_choice):
-    global user_wins, computer_wins, user_loses, computer_loses, ties
+    global user_wins, computer_wins, user_loses, computer_loses, ties,impatience
+    if impatience:
+        return
     if user_choice == computer_choice:
         print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold yellow]It's a tie![/bold yellow]")
@@ -141,8 +160,11 @@ def compare_choices(user_choice, computer_choice):
         computer_wins += 1
         user_loses += 1
 def play_game():
+    global impatience
     mode = get_mode()
-    global patience,skip,win_messages,insanely_hard_taunts,taunt_messages,tie_messages
+    if impatience:
+        return 
+    global patience,skip,win_messages,insanely_hard_taunts,taunt_messages,tie_messages,impatience_taunts
     print('how many rounds do you want to play?\n')
     while True:
         try:
@@ -156,14 +178,20 @@ def play_game():
             print('[bold red]please enter a valid number[/bold red]')
             patience -= 1
             if patience == 0:
-                print('computer has run out of patience')
+                print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
+                time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
                 time.sleep(2)
                 skip = True
+                impatience = True
                 break
+    if impatience:
+        return
     if not skip:
         if  hard_mode:
             for i in range(rounds):
+                if impatience:
+                    break
                 time.sleep(1)
                 print_function()
                 user_choice = get_user_choice()
@@ -171,40 +199,43 @@ def play_game():
                 compare_choices( user_choice ,computer_choice)
         else:
             for i in range(rounds):
+                    if impatience:
+                        break
                     time.sleep(1)
                     computer_choice = get_computer_choice(mode)
                     print_function()
                     user_choice = get_user_choice()
                     compare_choices(user_choice, computer_choice)
-    if not skip:
-        print('\n')
-        print('game over')
-        print('\n')
-        print('getting game analysis...')
-        time.sleep(2)
-        table = Table(title="Game Analysis")
-        table.add_column("User Wins", style="white", justify="center")
-        table.add_column("Computer Wins", style="white", justify="center")
-        table.add_column("User Loses", style="white", justify="center")
-        table.add_column("Computer Loses", style="white", justify="center")
-        table.add_column("Ties", style="white", justify="center")
-        table.add_row(str(user_wins), str(computer_wins), str(user_loses), str(computer_loses), str(ties))
-        console.print(table)
-        print('\n')
-        if user_wins > computer_wins:
-            print("[bold white]You won the game ![/bold white]\n")
-            print(f'[bold white]{random.choice(win_messages)}[/bold white]\n')
-        elif computer_wins > user_wins:
-            print("[bold red]You lost the game![/bold red]\n")
-            if hard_mode:
-                print(f"[bold red]{random.choice(insanely_hard_taunts)}[/bold red]\n")
+    if not impatience:
+        if not skip:
+            print('\n')
+            print('game over')
+            print('\n')
+            print('getting game analysis...')
+            time.sleep(2)
+            table = Table(title="Game Analysis")
+            table.add_column("User Wins", style="white", justify="center")
+            table.add_column("Computer Wins", style="white", justify="center")
+            table.add_column("User Loses", style="white", justify="center")
+            table.add_column("Computer Loses", style="white", justify="center")
+            table.add_column("Ties", style="white", justify="center")
+            table.add_row(str(user_wins), str(computer_wins), str(user_loses), str(computer_loses), str(ties))
+            console.print(table)
+            print('\n')
+            if user_wins > computer_wins:
+                print("[bold white]You won the game ![/bold white]\n")
+                print(f'[bold white]{random.choice(win_messages)}[/bold white]\n')
+            elif computer_wins > user_wins:
+                print("[bold red]You lost the game![/bold red]\n")
+                if hard_mode:
+                    print(f"[bold red]{random.choice(insanely_hard_taunts)}[/bold red]\n")
+                else:
+                    print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
             else:
-                print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
-        else:
-            print("[bold yellow]The match was a tie![/bold yellow]\n")
-            print(f'[bold yellow]{random.choice(tie_messages)}[/bold yellow]\n')
+                print("[bold yellow]The match was a tie![/bold yellow]\n")
+                print(f'[bold yellow]{random.choice(tie_messages)}[/bold yellow]\n')
 def get_mode():
-    global hard_mode,difficulty_drop_taunts
+    global hard_mode,difficulty_drop_taunts,impatience_taunts,patience,impatience
     print('select a mode\n')
     print('1: for hard\n2: for medium\n3: for easy\n4: [bold red]insanely hard you cant win[/bold red]\n')
     while True:
@@ -246,6 +277,15 @@ def get_mode():
                 return mode
         except ValueError:
             print('[bold red]please enter a valid choice[/bold red]')
+            patience -= 1
+            if patience == 0:
+                print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
+                time.sleep(5)
+                print('exiting game Goodbye👋👋🖐')
+                time.sleep(2)
+                skip = True
+                impatience = True
+                break
 
 print('loading game...')
 time.sleep(2)
@@ -260,6 +300,8 @@ while True:
     ties = 0
     skip = False
     play_game()
+    if impatience:
+        break
     if  not skip:
         play_again = input("Do you want to play again? (yes/no): ").lower()
         if play_again != "yes":
