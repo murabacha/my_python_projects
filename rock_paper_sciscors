@@ -11,19 +11,39 @@ computer_loses = 0
 ties = 0
 patience = 5
 skip = False
-
-def get_computer_choice(mode):
-    modes = {
-        "hard":['rock']*5 + ['paper']*5 + ['scissors']*5,
-        "medium":['rock']*2 + ['paper']*2 + ['scissors']*2,
-        "easy":['rock'] + ['paper'] + ['scissors']
+hard = 2
+hard_mode = False
+modes = {
+        "hard":['rock']*6 + ['paper']*3 + ['scissors']*2,
+        "medium":['rock']*2 + ['paper']*4 + ['scissors']*2,
+        "easy":['rock'] + ['paper']*2 + ['scissors']
     }
+def really_hard(user_choice):
+    global hard
+    if hard == 0:
+            choices = modes['easy']
+            computer_choice = random.choice(choices).lower()
+            hard = 2
+            return computer_choice
+    if user_choice == "rock":
+        computer_choice = "paper"
+        hard -= 1
+    elif user_choice == "paper":
+        computer_choice = "scissors"
+        hard -= 1
+    elif user_choice == "scissors":
+        computer_choice = "rock"
+        hard -= 1
+    return computer_choice
+def get_computer_choice(mode):
+    global hard,modes
     choices = modes[mode]
     computer_choice = random.choice(choices).lower()
     return computer_choice
-def get_user_choice():
+def print_function():
     print('select a choice\n')
     print('1: for rock\n2: for paper\n3: for scissors\n')
+def get_user_choice():
     while True:
         try:
             user_choice = int(input('enter your choice\n'))
@@ -39,34 +59,32 @@ def get_user_choice():
                 return user_choice
         except ValueError:
             print('[bold red]please enter a valid choice[/bold red]')
-
 def compare_choices(user_choice, computer_choice):
     global user_wins, computer_wins, user_loses, computer_loses, ties
     if user_choice == computer_choice:
-        print(f'you selected {user_choice} and computer selected {computer_choice}')
+        print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold yellow]It's a tie![/bold yellow]")
         ties += 1
     elif user_choice == "rock" and computer_choice == "scissors":
-        print(f'you selected {user_choice} and computer selected {computer_choice}')
+        print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     elif user_choice == "paper" and computer_choice == "rock":
-        print(f'you selected {user_choice} and computer selected {computer_choice}')
+        print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     elif user_choice == "scissors" and computer_choice == "paper":
-        print(f'you selected {user_choice} and computer selected {computer_choice}')
+        print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     else:
-        print(f'you selected {user_choice} and computer selected {computer_choice}')
+        print(f'you selected [bold red]{user_choice}[/bold red] and computer selected [bold red]{computer_choice}[/bold red]')
         print("[bold red]You lose![/bold red]")
         computer_wins += 1
         user_loses += 1
-    #return user_wins, computer_wins, user_loses, computer_loses, ties
 def play_game():
     mode = get_mode()
     global patience,skip
@@ -88,13 +106,21 @@ def play_game():
                 time.sleep(2)
                 skip = True
                 break
-    
     if not skip:
-        for i in range(rounds):
+        if  hard_mode:
+            for i in range(rounds):
                 time.sleep(1)
-                computer_choice = get_computer_choice(mode)
+                print_function()
                 user_choice = get_user_choice()
-                compare_choices(user_choice, computer_choice)
+                computer_choice = really_hard(user_choice)
+                compare_choices( user_choice ,computer_choice)
+        else:
+            for i in range(rounds):
+                    time.sleep(1)
+                    computer_choice = get_computer_choice(mode)
+                    print_function()
+                    user_choice = get_user_choice()
+                    compare_choices(user_choice, computer_choice)
     if not skip:
         print('\n')
         print('game over')
@@ -117,12 +143,13 @@ def play_game():
         else:
             print("[bold yellow]The match was a tie![/bold yellow]\n")
 def get_mode():
+    global hard_mode
     print('select a mode\n')
-    print('1: for hard\n2: for medium\n3: for easy\n')
+    print('1: for hard\n2: for medium\n3: for easy\n4: [bold red]insanely hard you cant win[/bold red]\n')
     while True:
         try:
             mode = int(input('enter your choice\n'))
-            if mode > 0 and mode < 4:
+            if mode > 0 and mode < 5:
                 if mode == 1:
                     mode = "hard"
                     print('[bold red]hard mode selected[/bold red]')
@@ -134,6 +161,11 @@ def get_mode():
                 elif mode == 3:
                     mode = "easy"
                     print("[bold yellow]easy mode selected[/bold yellow]")
+                    time.sleep(2)
+                elif mode == 4:
+                    mode = "insanely hard"
+                    print("[bold red]insanely hard mode selected[/bold red]")
+                    hard_mode = True
                     time.sleep(2)
                 else:
                     print('please enter a valid choice')
