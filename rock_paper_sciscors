@@ -18,6 +18,61 @@ modes = {
         "medium":['rock']*2 + ['paper']*4 + ['scissors']*2,
         "easy":['rock'] + ['paper']*2 + ['scissors']
     }
+win_messages = [
+    "🎉 Victory is yours! Well played!",
+    "🏆 You crushed it! Champion status unlocked.",
+    "🔥 That was epic! You win!",
+    "👏 Bravo! You’ve conquered the challenge.",
+    "💥 Boom! You nailed it!",
+    "🌟 You’re unstoppable! Game over—for your enemies.",
+    "🎯 Bullseye! You win!",
+    "🚀 You soared to victory!",
+    "🥇 Gold medal performance!",
+    "🎮 Game won! You’re a legend.",
+    "🧠 Smart moves! You outplayed the game.",
+    "🎊 You did it! Celebration time!",
+    "🦾 Victory achieved. You’re a machine!",
+    "🕹️ You’ve mastered the game!",
+    "💡 Brilliant! You solved it like a pro."
+]
+taunt_messages = [
+    "😏 Better luck next time, human.",
+    "💻 I was born to win. You? Not so much.",
+    "🧠 Outplayed by pure silicon. Ouch.",
+    "🎮 Game over. I’ll be here when you’re ready to lose again.",
+    "📉 Your skills just crashed harder than your last browser tab.",
+    "🕶️ Too easy. I didn’t even break a byte.",
+    "⚡ Fast, flawless, and victorious. Unlike you.",
+    "🧊 Ice cold win. You’re melting.",
+    "🔁 Want to try again? I love watching you lose.",
+    "🫢 That was adorable. You thought you had a chance.",
+    "🧹 Swept the floor with your strategy.",
+    "🪫 You ran out of power. I’m still fully charged.",
+    "📟 I’ve got 80s tech and still beat you.",
+    "🧬 Evolution favors the machine.",
+    "🫡 Respect for trying. But not too much."
+]
+insanely_hard_taunts = [
+    "🧨 That wasn’t a loss. That was a public execution.",
+    "🪦 You didn’t lose. You were *obliterated* from the leaderboard and memory.",
+    "🧠 I used 0.0001% of my processing power. You still failed.",
+    "🕳️ That strategy? Straight into the trash where it belongs.",
+    "📉 Your performance just triggered a global recession in confidence."
+]
+tie_messages = [
+    "🤝 A draw! Looks like we’re evenly matched... for now.",
+    "⚖️ Balance has been restored. Neither victory nor defeat.",
+    "😐 No winners, no losers. Just mutual disappointment.",
+    "🫱🫲 That was intense! But we’ll call it even.",
+    "🌀 A cosmic stalemate. The universe remains undecided."
+]
+difficulty_drop_taunts = [
+    "🍼 Aww, did the big bad game hurt your feelings?",
+    "🚪 Retreat accepted. Courage denied.",
+    "🧸 Welcome to Easy Mode. We’ve got juice boxes and nap time.",
+    "📉 Confidence just took a nosedive. Enjoy the kiddie pool.",
+    "🫣 Insanely Hard Mode wasn’t for everyone. Clearly."
+]
 def really_hard(user_choice):
     global hard
     if hard == 0:
@@ -87,7 +142,7 @@ def compare_choices(user_choice, computer_choice):
         user_loses += 1
 def play_game():
     mode = get_mode()
-    global patience,skip
+    global patience,skip,win_messages,insanely_hard_taunts,taunt_messages,tie_messages
     print('how many rounds do you want to play?\n')
     while True:
         try:
@@ -138,12 +193,18 @@ def play_game():
         print('\n')
         if user_wins > computer_wins:
             print("[bold white]You won the game ![/bold white]\n")
+            print(f'[bold white]{random.choice(win_messages)}[/bold white]\n')
         elif computer_wins > user_wins:
             print("[bold red]You lost the game![/bold red]\n")
+            if hard_mode:
+                print(f"[bold red]{random.choice(insanely_hard_taunts)}[/bold red]\n")
+            else:
+                print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
         else:
             print("[bold yellow]The match was a tie![/bold yellow]\n")
+            print(f'[bold yellow]{random.choice(tie_messages)}[/bold yellow]\n')
 def get_mode():
-    global hard_mode
+    global hard_mode,difficulty_drop_taunts
     print('select a mode\n')
     print('1: for hard\n2: for medium\n3: for easy\n4: [bold red]insanely hard you cant win[/bold red]\n')
     while True:
@@ -152,15 +213,28 @@ def get_mode():
             if mode > 0 and mode < 5:
                 if mode == 1:
                     mode = "hard"
+                    if hard_mode:
+                        print('[bold red] coward detected[/bold red]')
+                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]\n')
+                        time.sleep(5)
                     print('[bold red]hard mode selected[/bold red]')
+                    hard_mode = False
                     time.sleep(2)
                 elif mode == 2:
                     mode = 'medium'
+                    if hard_mode:
+                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]')
+                        time.sleep(2)
                     print("[bold white]medium mode selected[/bold white]")
+                    hard_mode = False
                     time.sleep(2)
                 elif mode == 3:
                     mode = "easy"
+                    if hard_mode:
+                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]')
+                        time.sleep(2)
                     print("[bold yellow]easy mode selected[/bold yellow]")
+                    hard_mode = False
                     time.sleep(2)
                 elif mode == 4:
                     mode = "insanely hard"
