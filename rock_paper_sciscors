@@ -9,22 +9,36 @@ computer_wins = 0
 user_loses = 0
 computer_loses = 0
 ties = 0
+patience = 5
+skip = False
 
-def get_computer_choice():
-    choices = ["rock", "paper", "scissors"]
+def get_computer_choice(mode):
+    modes = {
+        "hard":['rock']*5 + ['paper']*5 + ['scissors']*5,
+        "medium":['rock']*2 + ['paper']*2 + ['scissors']*2,
+        "easy":['rock'] + ['paper'] + ['scissors']
+    }
+    choices = modes[mode]
     computer_choice = random.choice(choices).lower()
     return computer_choice
 def get_user_choice():
     print('select a choice\n')
-    print('1: rock\n2: paper\n3: scissors\n')
-    user_choice = int(input('enter your choice\n'))
-    if user_choice == 1:
-        user_choice = "rock"
-    elif user_choice == 2:
-        user_choice = "paper"
-    elif user_choice == 3:
-        user_choice = "scissors"
-    return user_choice
+    print('1: for rock\n2: for paper\n3: for scissors\n')
+    while True:
+        try:
+            user_choice = int(input('enter your choice\n'))
+            if user_choice > 0 and user_choice < 4:
+                if user_choice == 1:
+                    user_choice = "rock"
+                elif user_choice == 2:
+                    user_choice = "paper"
+                elif user_choice == 3:
+                    user_choice = "scissors"
+                else:
+                    print('please enter a valid choice')
+                return user_choice
+        except ValueError:
+            print('[bold red]please enter a valid choice[/bold red]')
 
 def compare_choices(user_choice, computer_choice):
     global user_wins, computer_wins, user_loses, computer_loses, ties
@@ -54,44 +68,93 @@ def compare_choices(user_choice, computer_choice):
         user_loses += 1
     #return user_wins, computer_wins, user_loses, computer_loses, ties
 def play_game():
+    mode = get_mode()
+    global patience,skip
     print('how many rounds do you want to play?\n')
-    rounds = int(input('enter the number of rounds\n'))
-    for i in range(rounds):
-        time.sleep(1)
-        computer_choice = get_computer_choice()
-        user_choice = get_user_choice()
-        compare_choices(user_choice, computer_choice)
-    print('\n')
-    print('game over')
-    print('\n')
-    print('getting game analysis...')
-    time.sleep(2)
-    table = Table(title="Game Analysis")
-    table.add_column("User Wins", style="white", justify="center")
-    table.add_column("Computer Wins", style="white", justify="center")
-    table.add_column("User Loses", style="white", justify="center")
-    table.add_column("Computer Loses", style="white", justify="center")
-    table.add_column("Ties", style="white", justify="center")
-    table.add_row(str(user_wins), str(computer_wins), str(user_loses), str(computer_loses), str(ties))
-    console.print(table)
-    print('\n')
-    if user_wins > computer_wins:
-        print("[bold white]You won the game ![/bold white]\n")
-    elif computer_wins > user_wins:
-        print("[bold red]You lost the game![/bold red]\n")
-    else:
-        print("[bold yellow]The match was a tie![/bold yellow]\n")
+    while True:
+        try:
+            rounds = int(input('enter the number of rounds\n'))
+            if rounds > 0:
+                break
+            else:
+                print('please enter a valid number')
+        except ValueError:
+            print('[bold red]i can see you entering letters[/bold red]')
+            print('[bold red]please enter a valid number[/bold red]')
+            patience -= 1
+            if patience == 0:
+                print('computer has run out of patience')
+                print('exiting game Goodbye👋👋🖐')
+                time.sleep(2)
+                skip = True
+                break
+    
+    if not skip:
+        for i in range(rounds):
+                time.sleep(1)
+                computer_choice = get_computer_choice(mode)
+                user_choice = get_user_choice()
+                compare_choices(user_choice, computer_choice)
+    if not skip:
+        print('\n')
+        print('game over')
+        print('\n')
+        print('getting game analysis...')
+        time.sleep(2)
+        table = Table(title="Game Analysis")
+        table.add_column("User Wins", style="white", justify="center")
+        table.add_column("Computer Wins", style="white", justify="center")
+        table.add_column("User Loses", style="white", justify="center")
+        table.add_column("Computer Loses", style="white", justify="center")
+        table.add_column("Ties", style="white", justify="center")
+        table.add_row(str(user_wins), str(computer_wins), str(user_loses), str(computer_loses), str(ties))
+        console.print(table)
+        print('\n')
+        if user_wins > computer_wins:
+            print("[bold white]You won the game ![/bold white]\n")
+        elif computer_wins > user_wins:
+            print("[bold red]You lost the game![/bold red]\n")
+        else:
+            print("[bold yellow]The match was a tie![/bold yellow]\n")
+def get_mode():
+    print('select a mode\n')
+    print('1: for hard\n2: for medium\n3: for easy\n')
+    while True:
+        try:
+            mode = int(input('enter your choice\n'))
+            if mode > 0 and mode < 4:
+                if mode == 1:
+                    mode = "hard"
+                    print('[bold red]hard mode selected[/bold red]')
+                    time.sleep(2)
+                elif mode == 2:
+                    mode = 'medium'
+                    print("[bold white]medium mode selected[/bold white]")
+                    time.sleep(2)
+                elif mode == 3:
+                    mode = "easy"
+                    print("[bold yellow]easy mode selected[/bold yellow]")
+                    time.sleep(2)
+                else:
+                    print('please enter a valid choice')
+                return mode
+        except ValueError:
+            print('[bold red]please enter a valid choice[/bold red]')
 
 print('loading game...')
 time.sleep(2)
 print("Welcome to Rock, Paper, Scissors!")
 while True:
+    if skip:
+        break
     user_wins = 0
     computer_wins = 0
     user_loses = 0
     computer_loses = 0
     ties = 0
+    skip = False
     play_game()
-    play_again = input("Do you want to play again? (yes/no): ").lower()
-    if play_again != "yes":
-        break
+    if  not skip:
+        play_again = input("Do you want to play again? (yes/no): ").lower()
+        if play_again != "yes":
+            break
