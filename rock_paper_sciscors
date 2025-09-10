@@ -30,26 +30,26 @@ def compare_choices(user_choice, computer_choice):
     global user_wins, computer_wins, user_loses, computer_loses, ties
     if user_choice == computer_choice:
         print(f'you selected {user_choice} and computer selected {computer_choice}')
-        print("It's a tie!")
+        print("[bold yellow]It's a tie![/bold yellow]")
         ties += 1
     elif user_choice == "rock" and computer_choice == "scissors":
         print(f'you selected {user_choice} and computer selected {computer_choice}')
-        print("You win!")
+        print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     elif user_choice == "paper" and computer_choice == "rock":
         print(f'you selected {user_choice} and computer selected {computer_choice}')
-        print("You win!")
+        print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     elif user_choice == "scissors" and computer_choice == "paper":
         print(f'you selected {user_choice} and computer selected {computer_choice}')
-        print("You win!")
+        print("[bold white]You win![/bold white]")
         user_wins += 1
         computer_loses += 1
     else:
         print(f'you selected {user_choice} and computer selected {computer_choice}')
-        print("You lose!")
+        print("[bold red]You lose![/bold red]")
         computer_wins += 1
         user_loses += 1
     #return user_wins, computer_wins, user_loses, computer_loses, ties
@@ -61,22 +61,29 @@ def play_game():
         computer_choice = get_computer_choice()
         user_choice = get_user_choice()
         compare_choices(user_choice, computer_choice)
+    print('\n')
     print('game over')
-    print('getting game analysis')
+    print('\n')
+    print('getting game analysis...')
     time.sleep(2)
     table = Table(title="Game Analysis")
-    table.add_column("User Wins", style="white", justify="left")
-    table.add_column("Computer Wins", style="white", justify="left")
-    table.add_column("User Loses", style="white", justify="left")
-    table.add_column("Computer Loses", style="white", justify="left")
-    table.add_column("Ties", style="white", justify="left")
+    table.add_column("User Wins", style="white", justify="center")
+    table.add_column("Computer Wins", style="white", justify="center")
+    table.add_column("User Loses", style="white", justify="center")
+    table.add_column("Computer Loses", style="white", justify="center")
+    table.add_column("Ties", style="white", justify="center")
     table.add_row(str(user_wins), str(computer_wins), str(user_loses), str(computer_loses), str(ties))
     console.print(table)
-    # print(f'you won {user_wins} times')
-    # print(f'computer won {computer_wins} times')
-    # print(f'you lost {user_loses} times')
-    # print(f'computer lost {computer_loses} times')
-    # print(f'there were {ties} ties')
+    print('\n')
+    if user_wins > computer_wins:
+        print("[bold white]You won the game ![/bold white]\n")
+    elif computer_wins > user_wins:
+        print("[bold red]You lost the game![/bold red]\n")
+    else:
+        print("[bold yellow]The match was a tie![/bold yellow]\n")
+
+print('loading game...')
+time.sleep(2)
 print("Welcome to Rock, Paper, Scissors!")
 while True:
     user_wins = 0
