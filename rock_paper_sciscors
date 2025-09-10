@@ -1,3 +1,4 @@
+#you need to pip install rich
 import random
 import time
 from rich import print
@@ -80,6 +81,13 @@ impatience_taunts = [
     "🫠 My circuits are melting from secondhand embarrassment.",
     "📵 You’ve officially been banned from logic.",
     "🧹 I’m cleaning up your mess while you keep making it."
+]
+insane_mode_entry_taunts = [
+    "🧠 Bold move. Let’s see how long that confidence lasts.",
+    "🕳️ Welcome to the abyss. Hope you brought a flashlight.",
+    "🩻 You just volunteered for a digital beatdown. No refunds.",
+    "🧨 You chose pain. I deliver it in high definition.",
+    "🫵 You asked for it. Now don’t cry when it gets personal."
 ]
 def really_hard(user_choice):
     global hard
@@ -229,13 +237,14 @@ def play_game():
                 print("[bold red]You lost the game![/bold red]\n")
                 if hard_mode:
                     print(f"[bold red]{random.choice(insanely_hard_taunts)}[/bold red]\n")
+                    print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
                 else:
                     print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
             else:
                 print("[bold yellow]The match was a tie![/bold yellow]\n")
                 print(f'[bold yellow]{random.choice(tie_messages)}[/bold yellow]\n')
 def get_mode():
-    global hard_mode,difficulty_drop_taunts,impatience_taunts,patience,impatience
+    global hard_mode,difficulty_drop_taunts,impatience_taunts,patience,impatience,insane_mode_entry_taunts
     print('select a mode\n')
     print('1: for hard\n2: for medium\n3: for easy\n4: [bold red]insanely hard you cant win[/bold red]\n')
     while True:
@@ -245,7 +254,7 @@ def get_mode():
                 if mode == 1:
                     mode = "hard"
                     if hard_mode:
-                        print('[bold red] coward detected[/bold red]')
+                        print('[bold red] coward detected leaving hard mode[/bold red]\n')
                         print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]\n')
                         time.sleep(5)
                     print('[bold red]hard mode selected[/bold red]')
@@ -269,7 +278,8 @@ def get_mode():
                     time.sleep(2)
                 elif mode == 4:
                     mode = "insanely hard"
-                    print("[bold red]insanely hard mode selected[/bold red]")
+                    print("\n[bold red]insanely hard mode selected[/bold red]\n")
+                    print(f"\n[bold red]{random.choice(insane_mode_entry_taunts)}[/bold red]\n")
                     hard_mode = True
                     time.sleep(2)
                 else:
@@ -286,7 +296,20 @@ def get_mode():
                 skip = True
                 impatience = True
                 break
-
+goodbye_messages = [
+    "👋 Thanks for playing! Come back stronger next time.",
+    "🫡 Farewell, brave player. The game awaits your return.",
+    "🎉 That was fun! Until next time, champion.",
+    "🚪 You’ve exited the arena... but the legend remains.",
+    "🌌 Game over for now. The universe will miss you."
+]
+quit_insane_mode_taunts = [
+    "🫠 You chose chaos... then ran from it. Classic.",
+    "🧨 Insanely Hard Mode broke you. I’m not surprised.",
+    "🪦 You lasted less than a tutorial. Impressive in the worst way.",
+    "📉 Confidence entered the chat. Then immediately left.",
+    "🫵 You talked big. The mode talked bigger."
+]
 print('loading game...')
 time.sleep(2)
 print("Welcome to Rock, Paper, Scissors!")
@@ -304,5 +327,14 @@ while True:
         break
     if  not skip:
         play_again = input("Do you want to play again? (yes/no): ").lower()
-        if play_again != "yes":
+        if play_again != "yes" and hard_mode == True:
+            print('[bold red]😁😁rage quiter detected[/bold red]\n')
+            print(f'[bold red]{random.choice(quit_insane_mode_taunts)}[/bold red]\n')
+            print('closing game...')
+            time.sleep(3)
+            break
+        elif play_again != "yes":
+            print(f'[bold red]{random.choice(goodbye_messages)}[/bold red]\n')
+            print('closing game...')
+            time.sleep(3)
             break
