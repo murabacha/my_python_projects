@@ -3,6 +3,7 @@ from rich.table import Table
 from rich import print
 import random
 import time
+from rich.progress import track
 console = Console()
 library_colors = [
     "red",
@@ -27,8 +28,10 @@ def create_table(num1, num2):
         table.add_column(str(i) ,style=random.choice(library_colors)) 
     for i in range(1,num2 + 1):
         table.add_row(*[str(i * j) for j in range(1,num1 + 1)])
-    print(f'[{random.choice(library_colors)}]creating table...[/]')
-    time.sleep(5)
+    #print(f'[{random.choice(library_colors)}]creating table...[/]')
+    for i in track(range(10), description="creating table...   "):
+        time.sleep(1)
+    time.sleep(1)
     console.print(table)
 def create_multiplication_table(num1, num2):
     rows = []
