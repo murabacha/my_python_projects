@@ -5,6 +5,12 @@ from rich import print
 from rich.console import Console
 from rich.table import Table
 console = Console()
+import pyttsx3
+engine = pyttsx3.init()
+engine.setProperty('rate', 150)
+engine.setProperty('volume', 1.0)
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
 user_wins = 0
 computer_wins = 0
 user_loses = 0
@@ -83,12 +89,22 @@ impatience_taunts = [
     "🧹 I’m cleaning up your mess while you keep making it."
 ]
 insane_mode_entry_taunts = [
-    "🧠 Bold move. Let’s see how long that confidence lasts.",
-    "🕳️ Welcome to the abyss. Hope you brought a flashlight.",
-    "🩻 You just volunteered for a digital beatdown. No refunds.",
-    "🧨 You chose pain. I deliver it in high definition.",
-    "🫵 You asked for it. Now don’t cry when it gets personal."
+    " Bold move. Let’s see how long that confidence lasts.",
+    " Welcome to the abyss. Hope you brought a flashlight.",
+    " You just volunteered for a digital beatdown. No refunds.",
+    " You chose pain. I deliver it in high definition.",
+    "You asked for it. Now don’t cry when it gets personal."
 ]
+def clean_phrase(phrase):
+    import re
+    cleaned_phrase = re.sub(r'[^\x00-\x7F]+', ' ', phrase)
+    cleaned_phrase = re.sub(r'\[.*?\]', '', cleaned_phrase)
+    cleaned_phrase = ' '.join(cleaned_phrase.split())
+    return cleaned_phrase
+def speak(phrase):
+    cleaned_phrase = clean_phrase(phrase)
+    engine.say(cleaned_phrase)
+    engine.runAndWait()
 def really_hard(user_choice):
     global hard
     if hard == 0:
@@ -133,9 +149,13 @@ def get_user_choice():
             print('[bold red]please enter a valid choice[/bold red]')
             patience -= 1
             if patience == 0:
-                print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
+                phrase = random.choice(impatience_taunts)
+                print(f'[bold red]{phrase}[/bold red]\n')
+                speak(phrase)
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
+                engine.say('exiting game Goodbye👋👋🖐')
+                engine.runAndWait()
                 time.sleep(2)
                 impatience = True
                 break
@@ -174,6 +194,12 @@ def play_game():
         return 
     global patience,skip,win_messages,insanely_hard_taunts,taunt_messages,tie_messages,impatience_taunts
     print('how many rounds do you want to play?\n')
+    engine.setProperty('rate', 150)
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)
+    engine.setProperty('volume', 1.0)
+    engine.say('how many rounds do you want to play')
+    engine.runAndWait()
     while True:
         try:
             rounds = int(input('enter the number of rounds\n'))
@@ -189,6 +215,8 @@ def play_game():
                 print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
+                engine.say('exiting game Goodbye👋👋🖐')
+                engine.runAndWait()
                 time.sleep(2)
                 skip = True
                 impatience = True
@@ -220,6 +248,8 @@ def play_game():
             print('game over')
             print('\n')
             print('getting game analysis...')
+            engine.say('getting game analysis')
+            engine.runAndWait()
             time.sleep(2)
             table = Table(title="Game Analysis")
             table.add_column("User Wins", style="white", justify="center")
@@ -232,17 +262,29 @@ def play_game():
             print('\n')
             if user_wins > computer_wins:
                 print("[bold white]You won the game ![/bold white]\n")
-                print(f'[bold white]{random.choice(win_messages)}[/bold white]\n')
+                phrase = random.choice(win_messages)
+                print(f'[bold white]{phrase}[/bold white]\n')
+                speak(phrase)
             elif computer_wins > user_wins:
                 print("[bold red]You lost the game![/bold red]\n")
                 if hard_mode:
-                    print(f"[bold red]{random.choice(insanely_hard_taunts)}[/bold red]\n")
-                    print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
+                    phrase  = random.choice(insanely_hard_taunts)
+                    phrase1 = random.choice(taunt_messages)
+                    print(f"[bold red]{phrase}[/bold red]\n")
+                    speak(phrase)
+                    print(f'[bold red]{phrase1}[/bold red]\n')
+                    speak(phrase1)
                 else:
-                    print(f'[bold red]{random.choice(taunt_messages)}[/bold red]\n')
+                    phrase = random.choice(taunt_messages)
+                    print(f'[bold red]{phrase}[/bold red]\n')
+                    speak(phrase)
             else:
                 print("[bold yellow]The match was a tie![/bold yellow]\n")
-                print(f'[bold yellow]{random.choice(tie_messages)}[/bold yellow]\n')
+                engine.say('The match was a tie')
+                engine.runAndWait()
+                phrase = random.choice(tie_messages)
+                print(f'[bold yellow]{phrase}[/bold yellow]\n')
+                speak(phrase)
 def get_mode():
     global hard_mode,difficulty_drop_taunts,impatience_taunts,patience,impatience,insane_mode_entry_taunts
     print('select a mode\n')
@@ -255,7 +297,11 @@ def get_mode():
                     mode = "hard"
                     if hard_mode:
                         print('[bold red] coward detected leaving hard mode[/bold red]\n')
-                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]\n')
+                        engine.say('coward detected leaving hard mode')
+                        engine.runAndWait()
+                        phrase = random.choice(difficulty_drop_taunts)
+                        print(f'[bold red]{phrase}[/bold red]\n')
+                        speak(phrase)
                         time.sleep(5)
                     print('[bold red]hard mode selected[/bold red]')
                     hard_mode = False
@@ -263,7 +309,9 @@ def get_mode():
                 elif mode == 2:
                     mode = 'medium'
                     if hard_mode:
-                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]')
+                        phrase = random.choice(difficulty_drop_taunts)
+                        print(f'[bold red]{phrase}[/bold red]')
+                        speak(phrase)
                         time.sleep(2)
                     print("[bold white]medium mode selected[/bold white]")
                     hard_mode = False
@@ -271,7 +319,9 @@ def get_mode():
                 elif mode == 3:
                     mode = "easy"
                     if hard_mode:
-                        print(f'[bold red]{random.choice(difficulty_drop_taunts)}[/bold red]')
+                        phrase = random.choice(difficulty_drop_taunts)
+                        print(f'[bold red]{phrase}[/bold red]')
+                        speak(phrase)
                         time.sleep(2)
                     print("[bold yellow]easy mode selected[/bold yellow]")
                     hard_mode = False
@@ -279,7 +329,12 @@ def get_mode():
                 elif mode == 4:
                     mode = "insanely hard"
                     print("\n[bold red]insanely hard mode selected[/bold red]\n")
-                    print(f"\n[bold red]{random.choice(insane_mode_entry_taunts)}[/bold red]\n")
+                    engine.say('insanely hard mode selected')
+                    engine.runAndWait()
+                    time.sleep(1)
+                    phrase = random.choice(insane_mode_entry_taunts)
+                    speak(phrase)
+                    print(f"\n[bold red]{phrase}[/bold red]\n")
                     hard_mode = True
                     time.sleep(2)
                 else:
@@ -289,9 +344,13 @@ def get_mode():
             print('[bold red]please enter a valid choice[/bold red]')
             patience -= 1
             if patience == 0:
-                print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
+                phrase =  random.choice(impatience_taunts)
+                print(f'[bold red]{phrase}[/bold red]\n')
+                speak(phrase)
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
+                engine.say('exiting game Goodbye👋👋🖐')
+                engine.runAndWait()
                 time.sleep(2)
                 skip = True
                 impatience = True
@@ -329,12 +388,17 @@ while True:
         play_again = input("Do you want to play again? (yes/no): ").lower()
         if play_again != "yes" and hard_mode == True:
             print('[bold red]😁😁rage quiter detected[/bold red]\n')
-            print(f'[bold red]{random.choice(quit_insane_mode_taunts)}[/bold red]\n')
+            engine.say('😁😁rage quiter detected')
+            phrase = random.choice(quit_insane_mode_taunts)
+            print(f'[bold red]{phrase}[/bold red]\n')
+            speak(phrase)
             print('closing game...')
             time.sleep(3)
             break
         elif play_again != "yes":
-            print(f'[bold red]{random.choice(goodbye_messages)}[/bold red]\n')
+            phrase = random.choice(goodbye_messages)
+            print(f'[bold red]{phrase}[/bold red]\n')
+            speak(phrase) 
             print('closing game...')
             time.sleep(3)
             break
