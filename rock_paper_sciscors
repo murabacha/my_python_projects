@@ -1,4 +1,6 @@
 #you need to pip install rich
+#install pip install pyttsx3
+#some speak phrases work some other dont i have tried to debig but yet i cant seem to find the problem
 import random
 import time
 from rich import print
@@ -89,11 +91,11 @@ impatience_taunts = [
     "🧹 I’m cleaning up your mess while you keep making it."
 ]
 insane_mode_entry_taunts = [
-    " Bold move. Let’s see how long that confidence lasts.",
-    " Welcome to the abyss. Hope you brought a flashlight.",
-    " You just volunteered for a digital beatdown. No refunds.",
-    " You chose pain. I deliver it in high definition.",
-    "You asked for it. Now don’t cry when it gets personal."
+    "🧠 Bold move. Let’s see how long that confidence lasts.",
+    "🕳️ Welcome to the abyss. Hope you brought a flashlight.",
+    "🩻 You just volunteered for a digital beatdown. No refunds.",
+    "🧨 You chose pain. I deliver it in high definition.",
+    "🫵 You asked for it. Now don’t cry when it gets personal."
 ]
 def clean_phrase(phrase):
     import re
@@ -105,6 +107,7 @@ def speak(phrase):
     cleaned_phrase = clean_phrase(phrase)
     engine.say(cleaned_phrase)
     engine.runAndWait()
+    time.sleep(2)
 def really_hard(user_choice):
     global hard
     if hard == 0:
