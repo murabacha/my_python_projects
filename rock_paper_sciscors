@@ -7,12 +7,6 @@ from rich import print
 from rich.console import Console
 from rich.table import Table
 console = Console()
-import pyttsx3
-engine = pyttsx3.init()
-engine.setProperty('rate', 150)
-engine.setProperty('volume', 1.0)
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
 user_wins = 0
 computer_wins = 0
 user_loses = 0
@@ -104,10 +98,17 @@ def clean_phrase(phrase):
     cleaned_phrase = ' '.join(cleaned_phrase.split())
     return cleaned_phrase
 def speak(phrase):
-    cleaned_phrase = clean_phrase(phrase)
-    engine.say(cleaned_phrase)
+    import pyttsx3
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    engine.setProperty('volume', 1.0)
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)
+    # phrase = clean_phrase(phrase)
+    # print(phrase)
+    engine.say(phrase)
     engine.runAndWait()
-    time.sleep(2)
+    engine.stop()
 def really_hard(user_choice):
     global hard
     if hard == 0:
@@ -157,8 +158,7 @@ def get_user_choice():
                 speak(phrase)
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
-                engine.say('exiting game Goodbye👋👋🖐')
-                engine.runAndWait()
+                speak('exiting game Goodbye👋👋🖐')
                 time.sleep(2)
                 impatience = True
                 break
@@ -197,12 +197,8 @@ def play_game():
         return 
     global patience,skip,win_messages,insanely_hard_taunts,taunt_messages,tie_messages,impatience_taunts
     print('how many rounds do you want to play?\n')
-    engine.setProperty('rate', 150)
-    voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[1].id)
-    engine.setProperty('volume', 1.0)
-    engine.say('how many rounds do you want to play')
-    engine.runAndWait()
+    speak('how many rounds do you want to play')
+    time.sleep(1)
     while True:
         try:
             rounds = int(input('enter the number of rounds\n'))
@@ -218,8 +214,7 @@ def play_game():
                 print(f'[bold red]{random.choice(impatience_taunts)}[/bold red]\n')
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
-                engine.say('exiting game Goodbye👋👋🖐')
-                engine.runAndWait()
+                speak('exiting game Goodbye👋👋🖐')
                 time.sleep(2)
                 skip = True
                 impatience = True
@@ -251,8 +246,7 @@ def play_game():
             print('game over')
             print('\n')
             print('getting game analysis...')
-            engine.say('getting game analysis')
-            engine.runAndWait()
+            speak('getting game analysis')
             time.sleep(2)
             table = Table(title="Game Analysis")
             table.add_column("User Wins", style="white", justify="center")
@@ -268,6 +262,7 @@ def play_game():
                 phrase = random.choice(win_messages)
                 print(f'[bold white]{phrase}[/bold white]\n')
                 speak(phrase)
+                time.sleep(2)
             elif computer_wins > user_wins:
                 print("[bold red]You lost the game![/bold red]\n")
                 if hard_mode:
@@ -275,19 +270,23 @@ def play_game():
                     phrase1 = random.choice(taunt_messages)
                     print(f"[bold red]{phrase}[/bold red]\n")
                     speak(phrase)
+                    time.sleep(2)
                     print(f'[bold red]{phrase1}[/bold red]\n')
                     speak(phrase1)
+                    time.sleep(2)
                 else:
                     phrase = random.choice(taunt_messages)
                     print(f'[bold red]{phrase}[/bold red]\n')
                     speak(phrase)
+                    time.sleep(2)
             else:
                 print("[bold yellow]The match was a tie![/bold yellow]\n")
-                engine.say('The match was a tie')
-                engine.runAndWait()
+                speak('The match was a tie')
+                time.sleep(1)
                 phrase = random.choice(tie_messages)
                 print(f'[bold yellow]{phrase}[/bold yellow]\n')
                 speak(phrase)
+                time.sleep(2)
 def get_mode():
     global hard_mode,difficulty_drop_taunts,impatience_taunts,patience,impatience,insane_mode_entry_taunts
     print('select a mode\n')
@@ -300,8 +299,8 @@ def get_mode():
                     mode = "hard"
                     if hard_mode:
                         print('[bold red] coward detected leaving hard mode[/bold red]\n')
-                        engine.say('coward detected leaving hard mode')
-                        engine.runAndWait()
+                        speak('coward detected leaving hard mode')
+                        time.sleep(1)
                         phrase = random.choice(difficulty_drop_taunts)
                         print(f'[bold red]{phrase}[/bold red]\n')
                         speak(phrase)
@@ -332,12 +331,12 @@ def get_mode():
                 elif mode == 4:
                     mode = "insanely hard"
                     print("\n[bold red]insanely hard mode selected[/bold red]\n")
-                    engine.say('insanely hard mode selected')
-                    engine.runAndWait()
+                    speak('insanely hard mode selected')
                     time.sleep(1)
                     phrase = random.choice(insane_mode_entry_taunts)
-                    speak(phrase)
                     print(f"\n[bold red]{phrase}[/bold red]\n")
+                    speak(phrase)
+                    time.sleep(0.5)
                     hard_mode = True
                     time.sleep(2)
                 else:
@@ -352,8 +351,7 @@ def get_mode():
                 speak(phrase)
                 time.sleep(5)
                 print('exiting game Goodbye👋👋🖐')
-                engine.say('exiting game Goodbye👋👋🖐')
-                engine.runAndWait()
+                speak('exiting game Goodbye👋👋🖐')
                 time.sleep(2)
                 skip = True
                 impatience = True
@@ -391,10 +389,11 @@ while True:
         play_again = input("Do you want to play again? (yes/no): ").lower()
         if play_again != "yes" and hard_mode == True:
             print('[bold red]😁😁rage quiter detected[/bold red]\n')
-            engine.say('😁😁rage quiter detected')
+            speak('😁😁rage quiter detected')
             phrase = random.choice(quit_insane_mode_taunts)
             print(f'[bold red]{phrase}[/bold red]\n')
             speak(phrase)
+            time.sleep(2)
             print('closing game...')
             time.sleep(3)
             break
@@ -402,6 +401,7 @@ while True:
             phrase = random.choice(goodbye_messages)
             print(f'[bold red]{phrase}[/bold red]\n')
             speak(phrase) 
+            time.sleep(1)
             print('closing game...')
             time.sleep(3)
             break
